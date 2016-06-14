@@ -1,0 +1,156 @@
+body {
+    margin: 0;
+}
+
+.ui-links {
+    background: #cecece;
+    cursor: pointer;
+}
+
+#code-area {
+    position: absolute;
+    top: 10px;
+    width: 100%;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+#code-area textarea {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+
+#sidenav-overlay {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+/* TOP BAR */
+
+#container-options {
+    width: 100%;
+    position: absolute;
+    top: 10px;
+    z-index: 10;
+}
+
+#container-options a{
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
+/* HELPERS */
+
+.bold {
+    font-weight: bold;
+}
+
+.no-margin {
+    margin: 0 !important;
+}
+
+/* SIDEBAR */
+
+.side-nav .header {
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.side-nav .header:before {
+    content: '> ';
+}
+
+.side-nav .row {
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #cecece;
+}
+
+.side-nav li {
+    line-height: 1.5;
+}
+
+.side-nav li:hover {
+    background: 0;
+}
+
+.side-nav input {
+    height: 1.5rem !important;
+    line-height: 1.5rem !important;
+}
+
+.side-nav .space {
+    height: 1rem;
+}
+
+.side-nav .input-field {
+    margin-top: 0;
+}
+
+.side-nav .input-field label {
+    top: 0;
+}
+
+.side-nav .select-wrapper span.caret {
+    top: 0;
+}
+
+.side-nav i.material-icons {
+    line-height: 64px;
+    font-size: 2rem;
+    width: 4rem;
+    text-align: center;
+}
+
+.side-nav i.material-icons:hover {
+    color: #4C87A2;
+    border-bottom: 1px solid #cecece;
+}
+
+.side-nav .icons {
+    padding-bottom: 0;
+}
+
+/* MATRIX */
+
+td {
+    width: 17%;
+    position: relative;
+    border: 1px solid black;
+    background: white;
+}
+
+#matrix td {
+    padding: 0;
+}
+
+td:after {
+    content: '';
+    display: block;
+    margin-top: 100%;
+}
+td .content {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+}
+
+.selected {
+    background: #4C87A2;
+}
+
+/* ?? */
+
+.ui.custom.sidebar {
+    width: 415px !important;
+    margin-left: -415px !important;
+}
+
+.ui.active.custom.sidebar {
+    margin-left: 0px !important;
+}
+
+.ui.active.right.custom.sidebar {
+    margin-left: -415px !important;
+}

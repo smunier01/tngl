@@ -1,0 +1,262 @@
+<html>
+
+  <head>
+    <title>test</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="/libs/highlight/styles/default.css">
+    <script type="text/javascript" src="/libs/jquery-1.11.1.min.js"></script>
+
+    <script type="text/javascript" src="/libs/gl-matrix/dist/gl-matrix.js"></script>
+    <script type="text/javascript" src="/libs/highlight/highlight.pack.js"></script>
+
+    <!--Import Google Icon Font-->
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css">
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
+
+    <script src="/libs/codemirror-5.11/lib/codemirror.js"></script>
+    <link rel="stylesheet" href="/libs/codemirror-5.11/lib/codemirror.css">
+    <link rel="stylesheet" href="/libs/codemirror-5.11/addon/lint/lint.css">
+    <script src="/libs/codemirror-5.11/mode/webgl-clike.js"></script>
+    <script src="/libs/codemirror-5.11/addon/selection/active-line.js"></script>
+    <script src="/libs/codemirror-5.11/addon/edit/matchbrackets.js"></script>
+    <script src="/libs/codemirror-5.11/addon/lint/lint.js"></script>
+    <script src="/libs/jscolor.min.js"></script>
+
+    <link rel="stylesheet" href="style.css"/>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/stats.js/r14/Stats.js"></script>
+
+    <script type="text/javascript" src="/libs/tngl.js"></script>
+    <script type="text/javascript" src="ui.js"></script>
+    <script type="text/javascript" src="app.js"></script>
+
+  </head>
+
+  <body>
+    <ul id="slide-out" class="side-nav">
+
+      <li class="no-padding">
+        <div class="content">
+          <div class="row icons">
+            <a href="#" class="no-padding clear-button"><i class="material-icons">refresh</i></a>
+          </div>
+        </div>
+      </li>
+      <li class="no-padding">
+        <div class="content">
+          <div class="row">
+            <div class="header col s12">Resolution</div>
+            <div class="input-field col s4">
+              Multiplier
+            </div>
+            <div class="input-field col s8">
+              <input type="text" id="resolutionMultiplier" placeholder="Resolution Multiplier..." value="1.0">
+            </div>
+          </div>
+        </div>
+      </li>
+      <li class="no-padding">
+        <div class="content">
+          <div class="row">
+
+            <div class="header col s12">Neighboring cells</div>
+
+            <div class="col s3 offset-l4">
+              <table class="valign" id="matrix">
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td class="selected"></td>
+                  <td></td>
+                  <td class="selected"></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td class="selected"></td>
+                  <td></td>
+                  <td class="selected"></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+              </table>
+            </div>
+            <div class="col s12 space">
+            </div>
+            <div class="col s7">
+              if alive, keep living if between
+            </div>
+            <div class="input-field col s2">
+              <input id="aliveMin" class="center-align lifeRange" type="text" value="3"/>
+            </div>
+            <div class="col s1 center-align"> & </div>
+            <div class="input-field col s2 ">
+              <input id="aliveMax" class="center-align lifeRange" type="text" value="4"/>
+            </div>
+            <div class="col s7">
+              if dead, live if between
+            </div>
+            <div class="input-field col s2">
+              <input id="deadMin" class="center-align lifeRange" type="text" value="0"/>
+            </div>
+            <div class="col s1 center-align"> & </div>
+            <div class="input-field col s2">
+              <input id="deadMax" class="center-align lifeRange" type="text" value="0"/>
+            </div>
+          </div>
+        </div>
+      </li>
+      <li class="no-padding">
+        <div class="content">
+          <div class="row">
+            <div class="header col s12">Other</div>
+            <div class="col s12">
+              <input id="loopCheckbox" type="checkbox" checked/>
+              <label for="loopCheckbox">Loop Effect</label>
+            </div>
+          </div>
+        </div>
+      </li>
+      <li class="no-padding">
+        <div class="content">
+          <div class="row">
+            <div class="header col s12">Colors</div>
+            <div class="col s4">
+              alive
+            </div>
+            <div class="input-field col s8">
+              <input id="colorAlive" type="text" class="center-align jscolor" value="000000">
+            </div>
+            <div class="col s4">
+              init
+            </div>
+            <div class="input-field col s8">
+              <input id="colorDead" type="text" class="center-align jscolor" value="FFFFFF">
+            </div>
+          </div>
+        </div>
+      </li>
+      <li class="no-padding">
+        <div class="content">
+          <div class="row">
+            <div class="header col s12">
+              Dying Transition
+            </div>
+            <div class="col s6">
+              Main Channel
+            </div>
+            <div class="input-field col s6">
+              <select id="selectMainChannel">
+                <option value="R" selected>R</option>
+                <option value="G">G</option>
+                <option value="B">B</option>
+              </select>
+            </div>
+            <div class="bold red-text col s1">
+              R
+            </div>
+            <div class="input-field col s3">
+              <input style="width: 100%;" id="transDyingRColor" class="center-align dyingColor" type="text" value="0.0"/>
+            </div>
+            <div class="input-field col s4">
+              <input id="transDyingR" class="transCheckbox" type="checkbox" />
+              <label for="transDyingR">auto change</label>
+            </div>
+            <div class="input-field col s4">
+              <input id="transDyingRSpeed" class="center-align transSpeed" type="text" value="0.1" disabled/>
+            </div>
+            <div class="bold green-text col s1">
+              G
+            </div>
+            <div class="input-field col s3">
+              <input style="width: 100%;" id="transDyingGColor" class="center-align dyingColor" type="text" value="0.0"/>
+            </div>
+            <div class="input-field col s4">
+              <input id="transDyingG" class="transCheckbox" type="checkbox" />
+              <label for="transDyingG">auto change</label>
+            </div>
+            <div class="input-field col s4">
+              <input id="transDyingGSpeed" class="center-align transSpeed" type="text" value="0.1" disabled/>
+            </div>
+            <div class="bold blue-text col s1">
+              B
+            </div>
+            <div class="input-field col s3">
+              <input style="width: 100%;" id="transDyingBColor" class="center-align dyingColor" type="text" value="0.0"/>
+            </div>
+            <div class="input-field col s4">
+              <input id="transDyingB" class="transCheckbox" type="checkbox" />
+              <label for="transDyingB">auto change</label>
+            </div>
+            <div class="input-field col s4">
+              <input id="transDyingBSpeed" class="center-align transSpeed" type="text" value="0.1" disabled/>
+            </div>
+          </div>
+        </div>
+      </li>
+    </ul>
+
+    <div id="container-options">
+
+      <div class="right">
+        <a href="#hello" onclick="a" class="clear-button">
+          clear
+        </a>
+        <a href="#" data-activates="slide-out" class="button-collapse">
+          options
+        </a>
+      </div>
+    </div>
+
+
+    <div id="code-area">
+      <div class="row no-margin">
+        <div class="col s12 no-padding">
+          <a href="#" id="hide-toggle"> show code </a>
+        </div>
+        <div class="col l6 s12 no-padding" id="code"></div>
+      </div>
+    </div>
+
+    <canvas id="webgl-canvas" style="border: none; width: 100%; height: 100%;"></canvas>
+
+  </body>
+  <script>
+    $(function() {
+
+    $('.button-collapse').sideNav({
+    menuWidth: 500, // Default is 240
+    edge: 'right', // Choose the horizontal origin
+    closeOnClick: false // Closes side-nav on <a> clicks, useful for Angular/Meteor
+      }
+      );
+      $('.button-collapse').sideNav('show');
+      $('select').material_select();
+    });
+  </script>
+
+</html>
