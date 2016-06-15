@@ -3,13 +3,6 @@
  */
 var LifeSimulatorUi = function() {
     this.codeMirror = null;
-
-    $('#code').toggle();
-
-    $('#hide-toggle').on('click', function() {
-        $('#code').toggle();
-    });
-
 };
 
 LifeSimulatorUi.prototype = {
@@ -90,15 +83,16 @@ LifeSimulatorUi.prototype = {
             callback(that.hexToRgb($('#colorDead').val()));
         };
 
-        $('#colorDead').onFineChange = _onChange;
+        $('#colorDead')[0].jscolor.onFineChange = _onChange;
         _onChange();
     },
     onColorAliveChange: function(callback) {
         var that = this;
+
         var _onChange = function() {
             callback(that.hexToRgb($('#colorAlive').val()));
         };
-        $('#colorAlive').onFineChange = _onChange;
+        $('#colorAlive')[0].jscolor.onFineChange = _onChange;
         _onChange();
     },
     onLoopCheckBoxChange: function(callback) {
@@ -149,7 +143,7 @@ LifeSimulatorUi.prototype = {
                 getAnnotations: function(cm) {
                     // logsRef is a reference to the shader logs.
                     // It should always contains the latest compilation errors.
-                    return validator(cm, logsRef);
+                    return validator(cm, logsRef.frag);
                 }
             }
         });
@@ -163,6 +157,13 @@ LifeSimulatorUi.prototype = {
         });
 
         this.codeMirror.setSize($('#code').innerWidth() - this.codeMirror.display.nativeBarWidth, $(window).innerHeight() * 0.95);
+
+        $('#code').toggle();
+
+        $('#hide-toggle').on('click', function() {
+            $('#code').toggle();
+        });
+
     },
     onCodeMirrorChange: function(callback) {
         this.codeMirror.on('change', callback);

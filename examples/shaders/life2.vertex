@@ -13,7 +13,7 @@ uniform vec3 uScale;
 varying vec2 vUv;
 
 void main() {
-       
+
 
   // create rotation matrix for the orientation of the object
   mat4 rotationMatrix;
@@ -21,13 +21,13 @@ void main() {
   rotationMatrix[1] = vec4(0.0, 1.0, 0.0, 0.0);
   rotationMatrix[2] = vec4(uOrientation.z, 0.0, uOrientation.x, 0.0);
   rotationMatrix[3] = vec4(0.0, 0.0, 0.0, 1.0);
-  
+
   // vec4 vWorldPosition = uMVMatrix * vec4(((vec4(aVertexPosition, 1.0) * rotationMatrix).xyz * uScale) + uTranslation, 1.0);
 
   // vec4 vWorldPosition = uMVMatrix * vec4((aVertexPosition * uScale) + uTranslation, 1.0);
 
   vec4 vWorldPosition = vec4(aVertexPosition, 1.0);
-  
+
   vUv = aTexturePosition;
   gl_Position = vWorldPosition;
   // gl_Position = uPMatrix * vWorldPosition;
