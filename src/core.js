@@ -3,8 +3,6 @@ var TinyGL = function(canvas, options) {
     // reference to the webgl context
     this.gl = canvas.getContext("experimental-webgl");
 
-    console.log(this.gl);
-
     canvas.width = canvas.clientWidth;
     canvas.height = canvas.clientHeight;
 
@@ -504,6 +502,7 @@ TinyGL.prototype.newFramebuffer = function(name, height, width, magFilter, minFi
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, magFilter);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, minFilter);
 
+    // @TODO allow to modify this using the options
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
@@ -574,75 +573,6 @@ TinyGL.prototype.initShaders = function(shaders) {
     var taskLeft = nbTask;
 
     var pending = [];
-    /*
-    var attachShader = function(shader, i) {
-
-        var shaderInfo = shaders.data[i];
-
-        // we need both vertex & fragment shader
-        if (!(shaderInfo.name in pending)) {
-
-            pending[shaderInfo.name] = shader;
-
-        } else {
-
-            that.shaderPrograms[shaderInfo.name] = {};
-
-            // @TODO ugly
-            if (shader.type === gl.VERTEX_SHADER) {
-                that.shaderPrograms[shaderInfo.name].vertexCode = shader.code;
-                that.shaderPrograms[shaderInfo.name].fragCode = pending[shaderInfo.name].code;
-            } else {
-                that.shaderPrograms[shaderInfo.name].fragCode = shader.code;
-                that.shaderPrograms[shaderInfo.name].vertexCode = pending[shaderInfo.name].code;
-            }
-
-            var shaderProg = that.shaderPrograms[shaderInfo.name].prog = gl.createProgram();
-
-            gl.attachShader(shaderProg, pending[shaderInfo.name].compiled);
-            gl.attachShader(shaderProg, shader.compiled);
-            gl.linkProgram(shaderProg);
-
-            if (!that.gl.getProgramParameter(shaderProg, gl.LINK_STATUS)) {
-
-                console.error('couldn\'t link program ' + name + ' ' + gl.getProgramInfoLog(shaderProg));
-
-            } else {
-
-                // @TODO maybe move those two functions here ? they only take 3 lines each
-
-                that.setUniforms2Test(gl, shaderProg);
-                that.setAttributes2(gl, shaderProg);
-
-                console.log('[' + (i + 1) + '/' + nbTask + '] - \'' + shaderInfo.name + '\' linked');
-
-            }
-
-            taskLeft -= 1;
-
-            if (!taskLeft) {
-                d.resolve();
-            }
-        }
-
-    };
-
-    var compileShader = function(shaderText, shaderType) {
-
-        var tmpShader = gl.createShader(shaderType);
-
-        gl.shaderSource(tmpShader, shaderText);
-
-        gl.compileShader(tmpShader);
-
-        if (!gl.getShaderParameter(tmpShader, gl.COMPILE_STATUS)) {
-            console.error('shader compilation error : ' + tmpShader + ' ' + gl.getShaderInfoLog(tmpShader));
-            return null;
-        }
-
-        return {compiled: tmpShader, code: shaderText, type: shaderType};
-    };
-    */
 
     var processShader = function(shaderText, shaderType, i) {
 
@@ -655,16 +585,12 @@ TinyGL.prototype.initShaders = function(shaders) {
 
             var container = that.shaderPrograms[shaderInfo.name] = new TinyGL.ShaderContainer(that);
 
-            container.setVertexCode(shaderText)
-            // @TODO ugly
             if (shaderType === gl.VERTEX_SHADER) {
-                container.setVertexCode(shaderText)
-                // that.shaderPrograms[shaderInfo.name].vertexCode = shader.code;
-                container.setFragCode(pending[shaderInfo.name])
-                // that.shaderPrograms[shaderInfo.name].fragCode = pending[shaderInfo.name].code;
+                container.setVertexCode(shaderText);
+                container.setFragCode(pending[shaderInfo.name]);
             } else {
-                container.setFragCode(shaderText)
-                container.setVertexCode(pending[shaderInfo.name])
+                container.setFragCode(shaderText);
+                container.setVertexCode(pending[shaderInfo.name]);
             }
 
             container.compile();

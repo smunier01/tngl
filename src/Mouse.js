@@ -21,7 +21,7 @@ TnGL.Mouse.prototype = {
         }
     },
     disable: function() {
-
+        // @TODO
     },
     move: function(e) {
         this.currentX = e.clientX;
@@ -40,38 +40,6 @@ TnGL.Mouse.prototype = {
 
             this.scene.camera.pitch += movementY * 0.001;
             this.scene.camera.yaw += movementX * 0.001;
-            /*
-            var direction = vec3.create();
-
-            direction[0] = Math.cos(this.scene.camera.euler[0]) * Math.cos(this.scene.camera.euler[1]);
-            direction[1] = Math.sin(this.scene.camera.euler[1]);
-            direction[2] = Math.sin(this.scene.camera.euler[0]) * Math.cos(this.scene.camera.euler[1]);
-
-            var dest = vec3.create();
-
-            vec3.add(dest, this.scene.camera.position, direction);
-            console.log(this.scene.camera.position);
-            console.log(direction);
-            mat4.lookAt(this.scene.camera.mvMatrix, this.scene.camera.position, dest, [0.0, 1.0, 0.0]);
-            */
-            /*
-            var q = this.scene.camera.quat;
-
-            var q1 = this.scene.camera.q1;
-            var q2 = this.scene.camera.q2;
-
-            quat.rotateY(q1, q1, movementX * 0.001);
-            quat.rotateX(q2, q2, movementY * 0.001);
-
-            quat.multiply(q, q2, q1);
-
-            mat4.fromQuat(this.scene.camera.mvMatrix, q);
-            mat4.translate(this.scene.camera.mvMatrix, this.scene.camera.mvMatrix, [0.0, -10.0, 0.0]);
-
-            console.log(this.scene.camera.euler);
-            this.scene.camera.setEulerFromMatrix();
-            console.log(this.scene.camera.euler);
-            */
         }
     },
     clickUp: function(e) {
@@ -95,13 +63,13 @@ TnGL.Mouse.prototype = {
             this.ptrLock($('#webgl-canvas')[0]);
         }
     },
-    ptrLock: function(elem) {
-        elem.requestPointerLock =
-            elem.requestPointerLock ||
-            elem.mozRequestPointerLock ||
-            elem.webkitRequestPointerLock;
+    ptrLock: function(e) {
+        e.requestPointerLock =
+            e.requestPointerLock ||
+            e.mozRequestPointerLock ||
+            e.webkitRequestPointerLock;
 
-        elem.requestPointerLock();
+        e.requestPointerLock();
     }
 };
 

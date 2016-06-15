@@ -3,9 +3,10 @@ var TnGL = require('./core.js');
 TnGL.Object = function(buffer) {
     this.buffer = buffer;
 
+    // private. Only the setters/getters should be used.
     this.properties = {
         position: [0.0, 0.0, 0.0],
-        orientation: [1.0, 0.0, 0.0],
+        orientation: [1.0, 0.0, 0.0], // @TODO should be deprecated
         scale: [1.0, 1.0, 1.0],
         color: [0.0, 0.0, 0.0, 1.0],
         euler: vec3.create(),
@@ -13,9 +14,9 @@ TnGL.Object = function(buffer) {
     };
 
     // object model view matrix
+    // @TODO should be in the this.properties ?
     this.mvMatrix = mat4.create();
     mat4.identity(this.mvMatrix);
-
 };
 
 TnGL.Object.prototype = {
@@ -91,7 +92,7 @@ TnGL.Object.prototype = {
         this.direction[2] = Math.sin(this.euler[0]) * Math.cos(this.euler[1]);
     },
     quatRotateY: function(value) {
-	var halfAngle = value / 2;
+	    var halfAngle = value / 2;
         var s = Math.sin(halfAngle);
 
         var axis = [0.0, 1.0, 0.0];
@@ -107,7 +108,7 @@ TnGL.Object.prototype = {
         return this;
     },
     quatRotateX: function(value) {
-	var halfAngle = value / 2;
+	    var halfAngle = value / 2;
         var s = Math.sin(halfAngle);
 
         var axis = [1.0, 0.0, 0.0];
@@ -227,6 +228,9 @@ TnGL.Object.prototype = {
         this.properties.euler[1] = value[1];
         this.properties.euler[2] = value[2];
         this.onEulerChange();
+    },
+    get euler() {
+        return this.properties.euler;
     },
     set pitch(value) {
         this.properties.euler[0] = value;

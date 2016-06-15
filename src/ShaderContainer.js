@@ -271,7 +271,6 @@ TnGL.ShaderContainer.prototype = {
             console.error('shader compilation error : ' + gl.getShaderInfoLog(tmpShader));
             this.logs[errLog] = parseErrors(gl.getShaderInfoLog(tmpShader));
             return null;
-
         } else {
             this.logs[errLog] = [];
             return tmpShader;

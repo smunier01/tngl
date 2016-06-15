@@ -1,14 +1,14 @@
 var TnGL = require('./core.js');
+var TnGL.Object = require('./Object.js');
 
 TnGL.Camera = function() {
     TnGL.Object.call(this, null);
+    this.fov = 45.0;
     this.near = 1.0;
     this.far = 100.0;
-    //this.mvMatrix = mat4.create();
     this.pMatrix = mat4.create();
     this.normalMatrix = mat3.create();
     mat4.identity(this.pMatrix);
-    //mat4.identity(this.mvMatrix);
     mat3.identity(this.normalMatrix);
 };
 
@@ -16,6 +16,7 @@ TnGL.Camera.prototype = {
     __proto__: Object.create(TnGL.Object.prototype),
     perspective: function(fov, ratio, near, far) {
         mat4.perspective(this.pMatrix, fov * Math.PI / 180.0, ratio, near, far);
+        this.fov = fov;
         this.far = far;
         this.near = near;
         return this;

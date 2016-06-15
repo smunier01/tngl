@@ -1,4 +1,6 @@
 var TnGL = require('./core.js');
+var TnGL.Camera = require('./Camera.js');
+var TnGL.Mouse = require('./Mouse.js');
 
 TnGL.Scene = function(engine) {
     this.engine = engine;
@@ -6,8 +8,8 @@ TnGL.Scene = function(engine) {
     this.mouse = new TnGL.Mouse(this);
     this.parts = [];
     this.fov = 45.0;
-    this.nearPlane = 1.0;
-    this.farPlane = 1000.0;
+    // this.nearPlane = 1.0;
+    // this.farPlane = 1000.0; // @TODO shouldn't the near/far only be in Camera?
 };
 
 TnGL.Scene.prototype = {
