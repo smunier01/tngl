@@ -773,8 +773,6 @@ TinyGL.prototype.SimpleModels = {
         normals.itemSize = 3;
         normals.numItems = 24;
 
-        // @TODO
-
         var uv = [
             0.0, 0.0,
             0.0, 1.0,
@@ -873,8 +871,8 @@ TinyGL.prototype.addStats = function(n) {
     console.log(stat);
 
     stat.domElement.style.position = 'absolute';
-    stat.domElement.style.right = this.stats.length * 100 + 'px';
-    stat.domElement.style.top = '10px';
+    stat.domElement.style.left = this.stats.length * 100 + 'px';
+    stat.domElement.style.bottom = '10px';
 
     document.body.appendChild(stat.domElement);
 

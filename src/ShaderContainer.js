@@ -141,6 +141,8 @@ TnGL.ShaderContainer = function(engine) {
                     gl.uniform1f(this.program[uniform], object);
                 }
 
+                // @TODO very ugly code here..
+
                 if (object.length === 3) {
                     gl.uniform3fv(this.program[uniform], object);
                 } else if (object.length === 4) {
@@ -330,6 +332,34 @@ TnGL.ShaderContainer.prototype = {
         }
 
         return {attributes: attributes, uniforms: uniforms};
+    },
+    init: function() {
+        var gl = this.engine.gl;
+
+        this.currentBufferId = -1;
+
+        gl.useProgram(this.program);
+
+        var props = this.findShaderProperties();
+
+        // enable all the attributes
+        for (var attr of props.attributes) {
+            gl.enableVertexAttribArray(this.program[attr]);
+        }
+    },
+    clean: function() {
+        var gl = this.engine.gl;
+
+        this.currentBufferId = -1;
+
+        gl.useProgram(null);
+
+        var props = this.findShaderProperties();
+
+        // disable all the attributes
+        for (var attr of props.attributes) {
+            gl.disableVertexAttribArray(this.program[attr]);
+        }
     }
 
 };

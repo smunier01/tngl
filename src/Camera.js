@@ -1,5 +1,5 @@
 var TnGL = require('./core.js');
-var TnGL.Object = require('./Object.js');
+TnGL.Object = require('./Object.js');
 
 TnGL.Camera = function() {
     TnGL.Object.call(this, null);

@@ -199,6 +199,10 @@ $(function() {
         // enable the mouse with no interactions.
         this.myScene.mouse.enable(false);
 
+        this.addStats(0);
+        this.addStats(1);
+        this.addStats(2);
+
         // Every scene needs an object.
         // Since we simply want to draw to the screen, a square will do just fine.
         // By default, it is a square of 1x1 units, which is exactly the same as the default
@@ -235,13 +239,13 @@ $(function() {
         // swap the source & the target every frame
 
         scLife.bindTexture('uSample0', frame % 2 == 0 ? this.fbo.scene1 : this.fbo.scene2);
-        this.myScene.render(frame % 2 == 1 ? this.fbo.scene1 : this.fbo.scene2);
+        this.myScene.render(frame % 2 == 0 ? this.fbo.scene2 : this.fbo.scene1);
 
         var scTexture = this.myScene2.getPart('main').shaderContainer;
 
         // render the content of the framebuffer target to the screen.
 
-        scTexture.bindTexture('uSample0', frame % 2 == 1 ? this.fbo.scene1 : this.fbo.scene2);
+        scTexture.bindTexture('uSample0', this.fbo.scene2);
         this.myScene2.render(this.screen);
 
         // when the user click on the clear button, uClear will be set to 1.

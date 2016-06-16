@@ -9,3 +9,4 @@ exports.TnGL.Camera = require("./Camera.js");
 exports.TnGL.Mouse = require("./Mouse.js");
 exports.TnGL.ScenePart = require("./ScenePart.js");
 exports.TnGL.Scene = require("./Scene.js");
+exports.TnGL.Renderer = require("./Renderer.js");
