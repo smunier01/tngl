@@ -6,10 +6,11 @@ var TinyGL = function(canvas, options) {
     canvas.width = canvas.clientWidth;
     canvas.height = canvas.clientHeight;
 
+    // save the size of the canvas in the webgl context for future reference.
     this.gl.viewportWidth = canvas.width;
     this.gl.viewportHeight = canvas.height;
 
-    // user options
+    // tngl user options
     this.options = options;
 
     // textures
@@ -27,13 +28,16 @@ var TinyGL = function(canvas, options) {
     // webgl buffers
     this.buffers = [];
 
+    // will contain the stats.js stats to be displayed at the bottom.
     this.stats = [];
 
     // timers
     this.startTime = new Date().getTime();
     this.timeSinceStart = 0;
 
-    // 'framebuffer' placeholder to simulate rendering to the canvas.
+    // 'framebuffer' placeholder to render to the canvas.
+    // @TODO if the canvas size change, the width & height of the screen Object
+    // should also change.
     this.screen = {
         framebuffer: null,
         texture: null,
@@ -56,25 +60,19 @@ var TinyGL = function(canvas, options) {
      *
      * This is executed once after the setup process and before entering the rendering loop.
      */
-    this.postSetup = function() {
-
-    };
+    this.postSetup = function() { };
 
     /**
      * default renderTick function.
      *
      * This function is cap at 60fps and doesn't run when window is not visible.
      */
-    this.renderTick = function() {
-
-    };
+    this.renderTick = function() { };
 
     /**
      * default logicTick function.
      */
-    this.logicTick = function() {
-
-    };
+    this.logicTick = function() { };
 };
 
 var optionsDefault = {
@@ -95,7 +93,7 @@ var optionsDefault = {
             loadPath: 'textures/'
         },
         defaults: {
-            filtering: 'linear',
+            filtering: 'nearest',
             internalFormat: 'rgba',
             format: 'rgba',
             mipmap: true
@@ -180,9 +178,8 @@ TinyGL.prototype.init = function() {
             // postSetup
 
             that.postSetup();
-            console.log(that.stats);
 
-	    // setting up main rendering loop
+	        // setting up main rendering loop
 
             var frameNumber = 0;
 
@@ -191,6 +188,7 @@ TinyGL.prototype.init = function() {
                     that.stats[i].begin();
                 }
 
+                // @TODO handle overflow on frameNumber... restart to 0 ??
                 that.renderTick.call(that, that.gl, frameNumber++);
 
                 for (var j = 0; j < that.stats.length; j++) {
@@ -202,21 +200,25 @@ TinyGL.prototype.init = function() {
                 });
             }());
 
-	    // setting up main logic loop
+	        // setting up main logic loop
 
             (function mainLogicLoop() {
                 that.timeSinceStart = new Date().getTime() - that.startTime;
 
+                // @TODO use a different counter than frameNumber.
                 that.logicTick.call(that, that.gl, frameNumber);
 
                 setTimeout(mainLogicLoop, 1 / 60 * 1000);
             }());
 
             // we're done.
-
         });
 };
 
+/**
+ * @TODO move to a util class?
+ * @TODO there must be a better way.
+ */
 TinyGL.compareArray = function(a1, a2) {
 
     if (!a1 || !a2) {
@@ -238,12 +240,10 @@ TinyGL.compareArray = function(a1, a2) {
  * This is used as a way to easily enable/disable all the attributes
  */
 TinyGL.prototype.getPropertiesFromProg = function(prog) {
-
     var attributes = [];
     var uniforms = [];
 
     for (var attr in prog) {
-
         if (typeof prog[attr] === 'number') {
             attributes.push(attr);
         } else if (prog[attr] !== null && prog[attr].constructor.name === 'WebGLUniformLocation') {
@@ -255,66 +255,9 @@ TinyGL.prototype.getPropertiesFromProg = function(prog) {
 };
 
 /*
- * @TODO deprecated, but I kinda liked it
- */
-TinyGL.prototype.renderObjectTo = function(object, to, progName, callback) {
-
-    var gl = this.gl;
-
-    gl.bindFramebuffer(gl.FRAMEBUFFER, to.framebuffer);
-
-    gl.viewport(0, 0, to.width, to.height);
-
-    if (to.depth) {
-        gl.enable(gl.DEPTH_TEST)
-    } else {
-        gl.disable(gl.DEPTH_TEST);
-    }
-
-    var prog = this.shaderPrograms[progName].prog;
-
-    gl.useProgram(prog);
-
-    // enable attributes
-
-    var props = this.getPropertiesFromProg(prog);
-
-    // enable all the attributes
-    for (var attr1 of props.attributes) {
-        gl.enableVertexAttribArray(prog[attr1]);
-    }
-
-    gl.bindBuffer(gl.ARRAY_BUFFER, object.vertexPosition);
-    gl.vertexAttribPointer(prog.aVertexPosition, object.vertexPosition.itemSize, gl.FLOAT, false, 0, 0);
-
-    gl.bindBuffer(gl.ARRAY_BUFFER, object.uv);
-    gl.vertexAttribPointer(prog.aTexturePosition, object.uv.itemSize, gl.FLOAT, false, 0, 0);
-
-    callback(prog);
-
-    // rendering !
-
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, object.vertexIndex);
-
-    gl.drawElements(gl.TRIANGLES, object.vertexIndex.numItems, gl.UNSIGNED_SHORT, 0);
-
-    // cleanup
-
-    gl.disable(gl.DEPTH_TEST);
-
-    // disable all the attributes
-    for (var attr2 of props.attributes) {
-        gl.disableVertexAttribArray(prog[attr2]);
-    }
-
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-}
-
-
-/*
- * enable and store all the given extensions in options.extensions
+ * Enable and store all the given extensions in options.extensions
  *
- * a reference to each extension is kept in TinyGL.ext
+ * A reference to each extension is kept in 'ext'
  */
 TinyGL.prototype.initExtensions = function(extensions) {
 
@@ -334,16 +277,16 @@ TinyGL.prototype.initExtensions = function(extensions) {
         }
 
         if (!('source' in extDesc)) {
-            console.warn('initExtensions: extension must have a source (' + extDesc.name + ').');
+            console.warn('initExtensions: extension must have a source (%s).', extDesc.name);
             continue;
         }
 
         this.ext[extDesc.name] = this.gl.getExtension(extDesc.source);
 
         if (!this.ext[extDesc.name]) {
-            console.warn('couldn\'t load "' + extDesc.source + '"');
+            console.warn('initExtensions: couldn\'t load "%s"', extDesc.name);
         } else {
-            console.log('[' + (i + 1) + '/' + extensions.data.length + '] - ' + extDesc.name + ' loaded');
+            console.log('initExtensions: [%d/%d] - %s loaded', (i + 1), extensions.data.length, extDesc.name);
         }
     }
 
@@ -352,6 +295,9 @@ TinyGL.prototype.initExtensions = function(extensions) {
     return d.promise();
 };
 
+/*
+ * Creates framebuffers. Framebuffers can then be found in 'fbo'.
+ */
 TinyGL.prototype.initFramebuffers = function(framebuffers) {
 
     var d = $.Deferred();
@@ -367,7 +313,6 @@ TinyGL.prototype.initFramebuffers = function(framebuffers) {
         }
 
         this.fbo[fboDesc.name] = this.createFramebuffer(fboDesc);
-
     }
 
     d.resolve();
@@ -405,13 +350,15 @@ TinyGL.prototype.concatArrays = function() {
     return result;
 };
 
+/**
+ * Merge the defaults options (appOptions) into the user options (userOptions).
+ */
 TinyGL.prototype.optionsInitialisation = function(userOptions, appOptions) {
 
     for (var key in appOptions) {
         if (appOptions.hasOwnProperty(key)) {
 
             // first check if the module name exist in userOptions
-
             if (key in userOptions) {
 
                 if (!('options' in userOptions[key])) {
@@ -468,7 +415,9 @@ TinyGL.prototype.optionsInitialisation = function(userOptions, appOptions) {
 }
 
 /*
- * @TODO Might be a better way than recreating it entirely
+ * Change the size of a framebuffer.
+ * I didn't find a better way than simply recreating it.
+ * @TODO might be a way to destroy it more gracefully ?
  */
 TinyGL.prototype.changeFramebufferResolution = function(name, width, height) {
     var fbo = this.fbo[name];
@@ -534,27 +483,11 @@ TinyGL.prototype.createFramebuffer = function(fboDesc) {
 
     var gl = this.gl;
 
-    // @TODO all of this is ugly (the gl[..], typeof, ifs.. )
-
     var magFilter = gl[fboDesc.filtering.toUpperCase()];
     var minFilter = gl[fboDesc.filtering.toUpperCase()];
-
-    var w, h;
-
-    if (typeof fboDesc.width === "function") {
-        w = fboDesc.width(gl);
-    } else {
-        w = fboDesc.width;
-    }
-
-    if (typeof fboDesc.height === "function") {
-        h = fboDesc.height(gl);
-    } else {
-        h = fboDesc.heigh;
-    }
-
+    var w = typeof fboDesc.width === "function" ? fboDesc.width(gl) : fboDesc.width;
+    var h = typeof fboDesc.height === "function" ? fboDesc.height(gl) : fboDesc.height;
     var type = gl[fboDesc.type.toUpperCase()];
-
     var format = gl[fboDesc.format.toUpperCase()];
     var internalFormat = gl[fboDesc.internalFormat.toUpperCase()];
 
@@ -812,7 +745,7 @@ TinyGL.prototype.SimpleModels = {
 
         return model;
     }
-}
+};
 
 TinyGL.prototype.createBuffer = function(name, source) {
 
@@ -822,14 +755,12 @@ TinyGL.prototype.createBuffer = function(name, source) {
 
     var tmpVertexPositionBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, tmpVertexPositionBuffer);
-
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(source.vertices), gl.STATIC_DRAW);
     tmpVertexPositionBuffer.itemSize = source.vertices.itemSize;
     tmpVertexPositionBuffer.numItems = source.vertices.numItems;
 
     var tmpVertexIndexBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, tmpVertexIndexBuffer);
-
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(source.indices), gl.STATIC_DRAW);
     tmpVertexIndexBuffer.itemSize = source.indices.itemSize;
     tmpVertexIndexBuffer.numItems = source.indices.numItems;
@@ -837,17 +768,14 @@ TinyGL.prototype.createBuffer = function(name, source) {
     if ('normals' in source) {
         tmpVertexNormalBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, tmpVertexNormalBuffer);
-
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(source.normals), gl.STATIC_DRAW);
         tmpVertexNormalBuffer.itemSize = source.normals.itemSize;
         tmpVertexNormalBuffer.numItems = source.normals.numItems;
     }
 
-    // @TODO ? why !== 'undefined'
-    if (source.uv.numItems !== 'undefined') {
+    if ('uv' in source) {
         tmpTexturePositionBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, tmpTexturePositionBuffer);
-
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(source.uv), gl.STATIC_DRAW);
         tmpTexturePositionBuffer.itemSize = source.uv.itemSize;
         tmpTexturePositionBuffer.numItems = source.uv.numItems;
@@ -868,16 +796,14 @@ TinyGL.prototype.addStats = function(n) {
     var stat = new Stats();
     stat.setMode(n);
 
-    console.log(stat);
-
-    stat.domElement.style.position = 'absolute';
-    stat.domElement.style.left = this.stats.length * 100 + 'px';
-    stat.domElement.style.bottom = '10px';
+    stat.dom.style.position = 'absolute';
+    stat.dom.style.left = this.stats.length * 100 + 'px';
+    stat.dom.style.bottom = '10px';
+    stat.dom.style.top = "";
 
     document.body.appendChild(stat.domElement);
 
     this.stats.push(stat);
-    console.log(this.stats[0]);
 };
 
 TinyGL.prototype.createTextureFromArray = function(name, array) {
@@ -889,6 +815,7 @@ TinyGL.prototype.createTextureFromArray = function(name, array) {
     this.textures[name] = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, this.textures[name]);
     gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+    // @TODO 5 ?
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, 5, 5, 0, gl.RGB, gl.UNSIGNED_BYTE, new Uint8Array(array));
 
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
