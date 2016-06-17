@@ -8,6 +8,7 @@ TnGL.Renderer = function(gl) {
     this.target = null;
     this.viewport = null;
     this.scene = null;
+    this.indexType = gl.UNSIGNED_SHORT;
 };
 
 TnGL.Renderer.prototype = {
@@ -20,41 +21,35 @@ TnGL.Renderer.prototype = {
     setViewport: function(viewport) {
         this.viewport = viewport;
     },
+    bindVertexAttribPointer: function(attrLoc, buffer) {
+        if (attrLoc) {
+            gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+            gl.vertexAttribPointer(attrLoc, buffer.itemSize, gl.FLOAT, false, 0, 0);
+        }
+    },
     renderObject: function(object, shaderContainer) {
-        var gl = this.gl;
         var prog = shaderContainer.program;
 
         // no point re-binding all attributes when the previous object had the same buffer model.
-        // @TODO check this, there might be other test to do to be sure
-        //if (buffer.id !== shaderContainer.currentBufferId) {
-
-        gl.bindBuffer(gl.ARRAY_BUFFER, object.buffer.vertexPosition);
-        gl.vertexAttribPointer(prog.aVertexPosition, object.buffer.vertexPosition.itemSize, gl.FLOAT, false, 0, 0);
-
-        if (prog.aTexturePosition) {
-            gl.bindBuffer(gl.ARRAY_BUFFER, object.buffer.uv);
-            gl.vertexAttribPointer(prog.aTexturePosition, object.buffer.uv.itemSize, gl.FLOAT, false, 0, 0);
+        if (object.buffer.id !== shaderContainer.currentBufferId) {
+            bindVertexAttribPointer(prog.aVertexPosition, object.buffer.vertexPosition);
+            bindVertexAttribPointer(prog.aTexturePosition, object.buffer.uv);
+            bindVertexAttribPointer(prog.aVertexNormal, object.buffer.normals);
         }
 
-        if (prog.aVertexNormal) {
-            gl.bindBuffer(gl.ARRAY_BUFFER, object.buffer.normals);
-            gl.vertexAttribPointer(prog.aVertexNormal, object.buffer.normals.itemSize, gl.FLOAT, false, 0, 0);
-        }
-        //}
-
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, object.buffer.vertexIndex);
-
-        // @TODO gl.UNSIGNED_INT support ?
-        gl.drawElements(gl.TRIANGLES, object.buffer.vertexIndex.numItems, gl.UNSIGNED_SHORT, 0);
+        draw(object.buffer.vertexIndex);
 
         shaderContainer.currentBufferId = object.buffer.id;
+    },
+    draw: function(vertexIndex) {
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, vertexIndex);
+        gl.drawElements(gl.TRIANGLES, vertexIndex.numItems, this.indexType, 0);
     },
     render: function() {
         var gl = this.gl;
         var viewport = this.viewport;
         var to = this.target;
 
-        // @TODO check if 'to' is valid
         gl.bindFramebuffer(gl.FRAMEBUFFER, to.framebuffer);
 
         gl.viewport(viewport.x, viewport.y, viewport.width, viewport.height);
@@ -66,10 +61,7 @@ TnGL.Renderer.prototype = {
 
         to.depth ? gl.enable(gl.DEPTH_TEST) : gl.disable(gl.DEPTH_TEST);
 
-        // @TODO maybe the content of the loop should be moved to something like ShaderContainer.render() ?
-
-        // A scene is composed of multiple part. a 'part' is an array of object and a ShaderContainer object.
-        // Let's render each of those parts.
+        // render each part of the scene.
         for (var partName in this.scene.parts) {
             this.renderScenePart(this.scene.parts[partName]);
         }

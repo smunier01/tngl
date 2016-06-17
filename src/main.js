@@ -1,7 +1,3 @@
-/**
- * @author Simon Munier
- */
-
 exports.TnGL = require("./core.js");
 exports.TnGL.ShaderContainer = require("./ShaderContainer.js");
 exports.TnGL.Object = require("./Object.js");
