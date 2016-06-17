@@ -6,7 +6,6 @@
 	"codemirror": "latest",
 	"materialize": "latest",
 	"jquery": "latest",
-	"jscolor": "latest",
 	"stats.js": "latest"
     },
     "private": true

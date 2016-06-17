@@ -82,7 +82,6 @@ LifeSimulatorUi.prototype = {
         var _onChange = function() {
             callback(that.hexToRgb($('#colorDead').val()));
         };
-
         $('#colorDead')[0].jscolor.onFineChange = _onChange;
         _onChange();
     },
