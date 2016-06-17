@@ -1,0 +1,13 @@
+{
+    "name": "life-simulator",
+    "version": "0.0.1",
+    "dependencies": {
+	"gl-matrix": "latest",
+	"codemirror": "latest",
+	"materialize": "latest",
+	"jquery": "latest",
+	"jscolor": "latest",
+	"stats.js": "latest"
+    },
+    "private": true
+}

@@ -3,35 +3,36 @@
   <head>
     <title>test</title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
-    <script type="text/javascript" src="/npmlibs/gl-matrix/dist/gl-matrix.js"></script>
 
     <!--Import Google Icon Font-->
+
     <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-    <!-- Compiled and minified CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css">
+    <!-- materialized & codemirror css -->
+    
+    <link rel="stylesheet" href="./bower_components/materialize/bin/materialize.min.css">
+    <link rel="stylesheet" href="./bower_components/codemirror/lib/codemirror.css">
+    <link rel="stylesheet" href="./bower_components/codemirror/addon/lint/lint.css">
+    <link rel="stylesheet" href="./style.css"/>
 
-    <!-- Compiled and minified JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
+    <!-- external dependencies -->
 
-    <script src="/npmlibs/codemirror/lib/codemirror.js"></script>
-    <link rel="stylesheet" href="/npmlibs/codemirror/lib/codemirror.css">
-    <link rel="stylesheet" href="/npmlibs/codemirror/addon/lint/lint.css">
-    <script src="/npmlibs/codemirror/mode/webgl-clike.js"></script>
-    <script src="/npmlibs/codemirror/addon/selection/active-line.js"></script>
-    <script src="/npmlibs/codemirror/addon/edit/matchbrackets.js"></script>
-    <script src="/npmlibs/codemirror/addon/lint/lint.js"></script>
-    <script src="/libs/jscolor.min.js"></script>
+    <script src="./bower_components/jquery/jquery.min.js"></script>
+    <script src="./bower_components/gl-matrix/dist/gl-matrix.js"></script>
+    <script src="./bower_components/materialize/bin/materialize.min.js"></script>
+    <script src="./bower_components/codemirror/lib/codemirror.js"></script>
+    <script src="./bower_components/codemirror/mode/webgl-clike.js"></script>
+    <script src="./bower_components/codemirror/addon/selection/active-line.js"></script>
+    <script src="./bower_components/codemirror/addon/edit/matchbrackets.js"></script>
+    <script src="./bower_components/codemirror/addon/lint/lint.js"></script>
+    <script src="./bower_components/jscolor/jscolor.min.js"></script>
+    <script src="./bower_components/stats.js/stats.min.js"></script>
 
-    <link rel="stylesheet" href="style.css"/>
-
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/stats.js/r14/Stats.js"></script>
+    <!-- my dependecies -->
 
     <script type="text/javascript" src="/libs/tngl.js"></script>
     <script type="text/javascript" src="ui.js"></script>
     <script type="text/javascript" src="app.js"></script>
-
   </head>
 
   <body>
