@@ -36,8 +36,7 @@ var TinyGL = function(canvas, options) {
     this.timeSinceStart = 0;
 
     // 'framebuffer' placeholder to render to the canvas.
-    // @TODO if the canvas size change, the width & height of the screen Object
-    // should also change.
+    // @TODO if the canvas size change, the width & height of the screen Object should also change.
     this.screen = {
         framebuffer: null,
         texture: null,
@@ -51,9 +50,7 @@ var TinyGL = function(canvas, options) {
      *
      * This is executed once directly after the init call.
      */
-    this.preSetup = function(callback) {
-        callback();
-    };
+    this.preSetup = function(callback) { callback(); };
 
     /**
      * default postSetup function.

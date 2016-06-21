@@ -22,9 +22,9 @@ TnGL.Renderer.prototype = {
         this.viewport = viewport;
     },
     bindVertexAttribPointer: function(attrLoc, buffer) {
-        if (attrLoc) {
-            gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-            gl.vertexAttribPointer(attrLoc, buffer.itemSize, gl.FLOAT, false, 0, 0);
+        if (attrLoc >= 0) {
+            this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer);
+            this.gl.vertexAttribPointer(attrLoc, buffer.itemSize, this.gl.FLOAT, false, 0, 0);
         }
     },
     renderObject: function(object, shaderContainer) {
@@ -32,18 +32,18 @@ TnGL.Renderer.prototype = {
 
         // no point re-binding all attributes when the previous object had the same buffer model.
         if (object.buffer.id !== shaderContainer.currentBufferId) {
-            bindVertexAttribPointer(prog.aVertexPosition, object.buffer.vertexPosition);
-            bindVertexAttribPointer(prog.aTexturePosition, object.buffer.uv);
-            bindVertexAttribPointer(prog.aVertexNormal, object.buffer.normals);
+            this.bindVertexAttribPointer(prog.aVertexPosition, object.buffer.vertexPosition);
+            this.bindVertexAttribPointer(prog.aTexturePosition, object.buffer.uv);
+            this.bindVertexAttribPointer(prog.aVertexNormal, object.buffer.normals);
         }
 
-        draw(object.buffer.vertexIndex);
+        this.draw(object.buffer.vertexIndex);
 
         shaderContainer.currentBufferId = object.buffer.id;
     },
     draw: function(vertexIndex) {
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, vertexIndex);
-        gl.drawElements(gl.TRIANGLES, vertexIndex.numItems, this.indexType, 0);
+        this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, vertexIndex);
+        this.gl.drawElements(this.gl.TRIANGLES, vertexIndex.numItems, this.indexType, 0);
     },
     render: function() {
         var gl = this.gl;
