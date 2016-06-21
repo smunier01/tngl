@@ -18,11 +18,10 @@ $(function() {
                 cache: true,
                 fragExt: 'frag',
                 vertexExt: 'vertex',
-                loadPath: '/tinyjs/shaders/'
+                loadPath: '/shaders/'
             },
             data: [
-                {name: 'simpleTexture'},
-                {name: 'units'},
+                {name: 'basic2D'},
                 {name: 'life'}
             ]
         },
@@ -32,10 +31,10 @@ $(function() {
                 format: 'rgba',
                 type: 'float',
                 width: function(gl) {
-                    return Math.floor(gl.viewportWidth * 0.2);
+                    return Math.floor(gl.viewportWidth * 1.0);
                 },
                 height: function(gl) {
-                    return Math.floor(gl.viewportHeight * 0.2);
+                    return Math.floor(gl.viewportHeight * 1.0);
                 },
                 filtering: 'nearest',
                 depth: false
@@ -51,57 +50,42 @@ $(function() {
         }
     }
 
-    var tinyjs = new TinyJs($('#webgl-canvas')[0], options);
-
-    /*
-     * Called once right before the init() call
-     */
-    tinyjs.preSetup = function(callback) {
-
-        // your code
-
-        callback();
-    };
+    var tngl = new TnGL($('#webgl-canvas')[0], options);
 
     /*
      * Called once right after the init() call
      */
-    tinyjs.postSetup = function() {
+    tngl.postSetup = function() {
+        var square = new TnGL.Object(this.buffers.square2d);
 
-        this.myScene = new TinyJs.Scene(this);
+        this.myScene = new TnGL.Scene(this);
+        // enable the mouse with no interactions.
+        this.myScene.mouse.enable(false);
 
-        var object1 = new TinyJs.Object(this.buffers.square);
+        var scLife = tngl.getShaderContainer('life');
+        this.myScene.addPart('main', [square], scLife);
 
-        var shaderContainer = new TinyJs.ShaderContainer(this);
-        shaderContainer.setShader('life');
-
-        // the objects contained in the array will be rendered using the given shader and bindings
-        this.myScene.addObjects([object1], shaderContainer);
-
-        this.myScene2 = new TinyJs.Scene(this);
-        var shaderContainer2 = new TinyJs.ShaderContainer(this);
-        shaderContainer2.setShader('simpleTexture');
-
-        shaderContainer2.bindTexture('uSample0', this.fbo.scene2);
-        this.myScene2.addObjects([object1], shaderContainer2);
-
+        this.myScene2 = new TnGL.Scene(this);
+        var scSimple = tngl.getShaderContainer('basic2D');
+        this.myScene2.addPart('main', [square], scSimple);
     }
 
     /*
      * Called once every frame
      */
-    tinyjs.renderTick = function(gl, frame) {
+    tngl.renderTick = function(gl, frame) {
+        var scLife = this.myScene.getPart('main').shaderContainer;
 
-        var shaderContainer = this.myScene.groups[0].shaderContainer;
+        scLife.bindTexture('uSample0', frame % 2 == 0 ? this.fbo.scene1 : this.fbo.scene2);
+        this.myScene.render(frame % 2 == 0 ? this.fbo.scene2 : this.fbo.scene1);
+        this.myScene.render(this.screen);
 
-        shaderContainer.bindTexture('uSample0', this.fbo.scene1);
-        this.myScene.render(this.fbo.scene2);
+        var scSimple = this.myScene2.getPart('main').shaderContainer;
 
-        shaderContainer.bindTexture('uSample0', this.fbo.scene2);
-        this.myScene.render(this.fbo.scene1);
+        // render the content of the framebuffer target to the screen.
 
+        scSimple.bindTexture('uSample0', this.fbo.scene2);
         this.myScene2.render(this.screen);
-
 
         /*
         this.renderObjectTo(this.buffers.square, this.fbo.screen, 'simpleTexture', function(prog) {
@@ -112,12 +96,5 @@ $(function() {
         */
     };
 
-    /*
-     * Called 60 times every seconds
-     */
-    tinyjs.logicTick = function() {
-
-    };
-
-    tinyjs.init();
+    tngl.init();
 });

@@ -13,16 +13,16 @@ varying vec2 vUv;
 vec4 dying = vec4(1.0, mod(uTime * 0.1, 1.0), 0.4, 1.0);
 vec4 live = vec4(0.0, 0.0, 0.0, 0.9);
 vec4 dead = vec4(1.0, 1.0, 1.0, 1.0);
-  
+
 void main( void ) {
 
   vec2 position = (gl_FragCoord.xy / targetResolution.xy);
   vec2 pixel = 1.0 / targetResolution;
- 
+
   if (length(position - (uMouse / canvasResolution)) < 0.01) {
 
     float rnd1 = mod(fract(sin(dot(position + uTime * 0.001, vec2(14.9898,78.233))) * 43758.5453), 1.0);
-    
+
     if (rnd1 > 0.5) {
       gl_FragColor = live;
     } else {
@@ -35,14 +35,14 @@ void main( void ) {
 
     for (int x = -1; x < 2; x++) {
       for (int y = -1; y < 2; y++) {
-        if ((x != 0 || y != 0)) { 
+        if ((x != 0 || y != 0)) {
           sum += 1.0 - texture2D(uSample0, position + pixel * vec2(x, y)).a;
         }
       }
     }
- 
+
     vec4 me = texture2D(uSample0, position);
- 
+
     if (me.r < 0.1 && me.g < 0.1 && me.b < 0.1 && me.a < 0.1) {
 
       gl_FragColor = dead;
@@ -63,7 +63,7 @@ void main( void ) {
       } else {
         gl_FragColor = me;
       }
-    
+
     }
   }
   // gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
