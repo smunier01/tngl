@@ -44,7 +44,8 @@
       <li class="no-padding">
         <div class="content">
           <div class="row icons">
-            <a href="#" class="no-padding clear-button"><i class="material-icons">refresh</i></a>
+            <a href="#" class="col s6 no-padding clear-button"><i class="material-icons">refresh</i></a>
+            <a href="#" class="col s6 no-padding share-button"><i class="material-icons">share</i></a>
           </div>
         </div>
       </li>
@@ -249,12 +250,28 @@
   <script>
     $(function() {
 
-    $('.button-collapse').sideNav({
-    menuWidth: 500, // Default is 240
-    edge: 'right', // Choose the horizontal origin
-    closeOnClick: false // Closes side-nav on <a> clicks, useful for Angular/Meteor
-      }
-      );
+        var getUrlParameter = function getUrlParameter(sParam) {
+            var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+                sURLVariables = sPageURL.split('&'),
+                sParameterName,
+                i;
+
+            for (i = 0; i < sURLVariables.length; i++) {
+                sParameterName = sURLVariables[i].split('=');
+
+                if (sParameterName[0] === sParam) {
+                    return sParameterName[1] === undefined ? true : sParameterName[1];
+                }
+            }
+        };
+
+        console.log(getUrlParameter('t'));
+
+        $('.button-collapse').sideNav({
+            menuWidth: 500, // Default is 240
+            edge: 'right', // Choose the horizontal origin
+            closeOnClick: false // Closes side-nav on <a> clicks, useful for Angular/Meteor
+        });
       $('.button-collapse').sideNav('show');
       $('select').material_select();
     });

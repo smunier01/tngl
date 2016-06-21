@@ -2,27 +2,80 @@
  * Handle the inputs on the side bar & code mirror
  */
 var LifeSimulatorUi = function() {
+    var that = this;
     this.codeMirror = null;
+    $('.share-button').on('click', function() {
+        that.popupUrlLink();
+        console.log('hello');
+    });
+    this.initFromUrlParam('t');
 };
 
 LifeSimulatorUi.prototype = {
+    initFromUrlParam: function(param) {
+
+    },
+    getUrlParameter: function(sParam) {
+        var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+            sURLVariables = sPageURL.split('&'),
+            sParameterName,
+            i;
+
+        for (i = 0; i < sURLVariables.length; i++) {
+            sParameterName = sURLVariables[i].split('=');
+
+            if (sParameterName[0] === sParam) {
+                return sParameterName[1] === undefined ? true : sParameterName[1];
+            }
+        }
+    },
+    popupUrlLink: function() {
+        alert(this.getUrlLink());
+    },
+    getUrlLink: function() {
+
+        var val = '';
+        $('#matrix td').each(function() {
+            if ($(this).hasClass('selected')) {
+                val += 1;
+            } else {
+                val += 0;
+            }
+        });
+
+        var obj = {
+            matrix: parseInt(val, 2),
+            amin: $('#aliveMin'),
+            amax: $('#aliveMax'),
+            dmin: $('#deadMin'),
+            dmax: $('#deadMax'),
+            cdead: $('#colorDead').val(),
+            calive: $('#colorAlive').val(),
+            res: $('resolutionMultiplier'),
+            main: $('#selectMainChannel')
+        };
+        return JSON.stringify(obj);
+    },
+    getMatrix: function() {
+        var mat = [];
+
+        $('#matrix td').each(function() {
+
+            var val = 0;
+
+            if ($(this).hasClass('selected')) {
+                val = 255;
+            }
+
+            mat.push(val, val, val);
+        });
+
+        return mat;
+    },
     onNeighborMatrixChange: function(callback) {
-
+        var that = this;
         var _onChange = function() {
-
-            var mat = [];
-
-            $('#matrix td').each(function() {
-
-                var val = 0;
-
-                if ($(this).hasClass('selected')) {
-                    val = 255;
-                }
-
-                mat.push(val, val, val);
-            });
-
+            var mat = that.getMatrix();
             callback(mat);
         };
 
