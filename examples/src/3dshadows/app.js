@@ -22,7 +22,7 @@ $(function() {
                 cache: true,
                 fragExt: 'frag',
                 vertexExt: 'vertex',
-                loadPath: '/tinyjs/shaders/'
+                loadPath: '/shaders/'
             },
             data: [
                 {name: 'simpleColor'},
@@ -33,7 +33,7 @@ $(function() {
         },
         textures: {
             options: {
-                loadPath: '/tinyjs/textures/'
+                loadPath: '/textures/'
             },
             data: [
                 {name: 'sand1', source: 'sand1.png'}
@@ -64,12 +64,12 @@ $(function() {
         }
     }
 
-    var tinyjs = new TinyJs($('#webgl-canvas')[0], options);
+    var tngl = new TnGL($('#webgl-canvas')[0], options);
 
     /*
      * Called once right after the init() call
      */
-    tinyjs.postSetup = function() {
+    tngl.postSetup = function() {
 
         this.addStats(0);
         this.addStats(1);
@@ -79,7 +79,7 @@ $(function() {
         // objects
         //
 
-        var cube1 = new TinyJs.Object(this.buffers.cube);
+        var cube1 = new TnGL.Object(this.buffers.cube);
         this.cube = cube1;
         cube1.color = [1.0, 0.0, 0.0];
         cube1.translate([0.0, 1.0, -10.0], 1);
@@ -87,10 +87,10 @@ $(function() {
 
         // a 100x100 square as a floor
         this.createBuffer('floor', this.getModel('square', 100));
-        var floor = new TinyJs.Object(this.buffers.floor);
+        var floor = new TnGL.Object(this.buffers.floor);
 
         // a 0.2 x 0.2 x 0.2 green cube to simulate the position of the light
-        var light = new TinyJs.Object(this.buffers.cube);
+        var light = new TnGL.Object(this.buffers.cube);
         this.light = light;
         light.color = [0.0, 1.0, 0.0];
         light.scale = [0.2, 0.2, 0.2];
@@ -116,12 +116,12 @@ $(function() {
 
         // mainScene will be used to draw all the object & shadows
 
-        this.mainScene = new TinyJs.Scene(this);
+        this.mainScene = new TnGL.Scene(this);
 
         // it will draw both cubes with our 'simpleColor' shaders
-        this.mainScene.addPart('myCubes', [light], scColor);
+        this.mainScene.addPart('myCubes', [light, cube1], scColor);
         // and the floor with 'simpleTexture'
-        this.mainScene.addPart('floor', [floor, cube1], scTexture);
+        this.mainScene.addPart('floor', [floor], scTexture);
 
         this.mainScene.mouse.enable(true);
 
@@ -134,20 +134,20 @@ $(function() {
 
         // scene that will render the depth map
 
-        this.depthMapScene = new TinyJs.Scene(this);
+        this.depthMapScene = new TnGL.Scene(this);
 
         this.depthMapScene.addPart('main', [cube1, floor], scDepthMap);
         this.depthMapScene.camera.lookAt(light.position, cube1.position, [0.0, 1.0, 0.0]);
         this.depthMapScene.camera.perspective(45.0, this.gl.viewportWidth / this.gl.viewportHeight, 1.0, 50.0);
 
-        this.scene2d = new TinyJs.Scene(this);
-        this.scene2d.addPart('square', [new TinyJs.Object(this.buffers.square2d)], this.getShaderContainer('basic2D'));
+        this.scene2d = new TnGL.Scene(this);
+        this.scene2d.addPart('square', [new TnGL.Object(this.buffers.square2d)], this.getShaderContainer('basic2D'));
     }
 
     /*
      * Called once every frame
      */
-    tinyjs.renderTick = function(gl, frame) {
+    tngl.renderTick = function(gl, frame) {
 
         // let's make the light rotate around the cube
         this.light.rotateYFromCenter(this.cube.position, 0.01);
@@ -193,9 +193,9 @@ $(function() {
     /*
      * Called 60 times every seconds
      */
-    tinyjs.logicTick = function() {
+    tngl.logicTick = function() {
 
     };
 
-    tinyjs.init();
+    tngl.init();
 });

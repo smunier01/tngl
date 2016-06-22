@@ -47,7 +47,7 @@ float attenuation(vec3 dir){
   float radiance = 1.0/(1.0+pow(dist/10.0, 2.0));
   return clamp(radiance*10.0, 0.0, 1.0);
 }
-        
+
 float influence(vec3 normal, float coneAngle){
   float minConeAngle = ((360.0-coneAngle-10.0)/360.0)*PI;
   float maxConeAngle = ((360.0-coneAngle)/360.0)*PI;
@@ -64,7 +64,7 @@ float influence2(vec3 pos, float maxi, vec3 normal, float coneAngle){
 float lambert(vec3 surfaceNormal, vec3 lightDirNormal){
   return max(0.0, dot(surfaceNormal, lightDirNormal));
 }
-        
+
 vec3 skyLight(vec3 normal){
   return vec3(smoothstep(0.0, PI, PI-acos(normal.y)))*0.4;
 }
@@ -94,15 +94,15 @@ void main () {
   float lightDepth = clamp((length(lightPosition) - uLightNearPlane) * LinearDepthConstant, 0.0, 1.0);
 
   float shadow1 = VSM(uDepthMap, lightUV, lightDepth);
-  
+
   vec2 moments = texture2D(uDepthMap, lightUV).xy;
-  // 
+  //
   /*
   vec3 depth = vLightPosition.xyz / vLightPosition.w;
   float f = clamp((length(vLightPosition2) - Near) * LinearDepthConstant, 0.0, 1.0);
   float v = (vLightPosition.z - Near) * LinearDepthConstant;
   float h = (vLightPosition2.z - Near) * LinearDepthConstant;
-  
+
   float shadow1 = VSM(uDepthMap, depth.xy, f);
   vec4 colora = texture2D(uDepthMap, depth.xy);
   */
@@ -112,19 +112,19 @@ void main () {
 
 
   vec3 excident = (
-                   skyLight(worldNormal) + 
+                   skyLight(worldNormal) +
                    lambert(lightSurfaceNormal, -lightPosNormal) *
                    influence(lightPosNormal, 55.0) *
                    attenuation(lightPosition) *
                    shadow1
                    );
-  
+
   vec2 tt = vLightPosition.xy / max(0.0, vLightPosition.w);
   float x = tt.x;
   float y = tt.y;
   /*
   float t1 = smoothstep(0.9, 1.0, 1.0 - lightUV.x);
-  float t2 = smoothstep(0.9, 1.0, lightUV.x);    
+  float t2 = smoothstep(0.9, 1.0, lightUV.x);
   float t3 = smoothstep(0.9, 1.0, 1.0 - lightUV.y);
   float t4 = smoothstep(0.9, 1.0, lightUV.y);
 
@@ -137,8 +137,8 @@ void main () {
   // a = 0 & b = 0 --> 1
   // a = 1 & b = 0 --> 1
 
-  
-  
+
+
   vec3 textureColor = texture2D(uSample0, vUv * 64.0).rgb;
   float lightContrib = (min(shadow1 - t, 0.0) + 1.0);
   gl_FragColor = vec4(textureColor * vec3(influence2(lightPosition, 50.0, lightPosNormal, 45.0) * shadow1), 1.0);

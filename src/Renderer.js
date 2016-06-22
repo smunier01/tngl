@@ -30,6 +30,8 @@ TnGL.Renderer.prototype = {
     renderObject: function(object, shaderContainer) {
         var prog = shaderContainer.program;
 
+        shaderContainer.updatePositionUniforms(object);
+
         // no point re-binding all attributes when the previous object had the same buffer model.
         if (object.buffer.id !== shaderContainer.currentBufferId) {
             this.bindVertexAttribPointer(prog.aVertexPosition, object.buffer.vertexPosition);
