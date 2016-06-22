@@ -83,7 +83,6 @@ $(function() {
         this.cube = cube1;
         cube1.color = [1.0, 0.0, 0.0];
         cube1.translate([0.0, 1.0, -10.0], 1);
-        console.log(cube1);
 
         // a 100x100 square as a floor
         this.createBuffer('floor', this.getModel('square', 100));
