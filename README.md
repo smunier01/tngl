@@ -34,8 +34,8 @@ var options = {
 ```
 
  - no webgl extensions and no textures are used.
- - 2 shader programs are going to be created. shader1 will composed of shader1.frag and shader1.frag. Both files should be in /shaders/.
- - A framebuffer named 'fbo1' is instanciated. We didn't specify any options, the defaults are used.
+ - 2 shader programs are going to be created. `shader1` will be composed of `shader1.frag` and `shader1.vertex`. Both files should be in /shaders/.
+ - A framebuffer named `fbo1` is instanciated. We didn't specify any options, the defaults are used.
 
 Here is a slightly more complex config:
 
