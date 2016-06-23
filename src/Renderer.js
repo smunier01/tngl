@@ -22,7 +22,7 @@ TnGL.Renderer.prototype = {
         this.viewport = viewport;
     },
     bindVertexAttribPointer: function(attrLoc, buffer) {
-        if (attrLoc >= 0) {
+        if (attrLoc >= 0 && buffer != null) {
             this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer);
             this.gl.vertexAttribPointer(attrLoc, buffer.itemSize, this.gl.FLOAT, false, 0, 0);
         }

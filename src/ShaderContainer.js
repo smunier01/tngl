@@ -190,9 +190,9 @@ TnGL.ShaderContainer.prototype = {
         }
 
         if (this.program.uOrientation) {
-            if (!TnGL.compareArray(this.currentOrientation, object.orientation)) {
-                gl.uniform3fv(this.program.uOrientation, object.orientation);
-                this.currentOrientation = object.orientation;
+            if (!TnGL.compareArray(this.currentOrientation, object.properties.orientation)) {
+                gl.uniform3fv(this.program.uOrientation, object.properties.orientation);
+                this.currentOrientation = object.properties.orientation;
             }
         }
 

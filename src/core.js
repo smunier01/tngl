@@ -607,10 +607,21 @@ TinyGL.prototype.getModel = function(name, size) {
     uv.itemSize = 2;
     uv.numItems = 4;
 
+    var normals = [
+        0.0, 1.0, 0.0,
+        0.0, 1.0, 0.0,
+        0.0, 1.0, 0.0,
+        0.0, 1.0, 0.0
+    ];
+
+    normals.itemSize = 3;
+    normals.numItems = 4;
+
     var model = {
     	vertices: vertices,
     	indices: indices,
-        uv: uv
+        uv: uv,
+        normals: normals
     }
 
     return model;
