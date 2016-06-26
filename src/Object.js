@@ -35,7 +35,6 @@ TnGL.Object.prototype = {
     },
     // update quaternion & mvmatrix after eulers have been changed
     onEulerChange: function() {
-
         // update quaternion
 
         this.updateQuaternionFromEulers();
@@ -47,7 +46,6 @@ TnGL.Object.prototype = {
 
     },
     onMvmatrixChange: function() {
-
         // update eulers
 
         this.updateEulersFromMatrix();
@@ -61,12 +59,10 @@ TnGL.Object.prototype = {
         // @TODO
     },
     onQuaternionChange: function() {
-
         // update mvmatrix
 
         mat4.fromQuat(this.mvMatrix, this.properties.quat);
-        mat4.translate(this.mvMatrix, this.mvMatrix, this.position);
-
+        mat4.translate(this.mvMatrix, this.mvMatrix, [-this.position[0], -this.position[1], -this.position[2]]);
         // update eulers
 
         this.updateEulersFromMatrix();
@@ -91,36 +87,19 @@ TnGL.Object.prototype = {
         this.direction[1] = Math.sin(this.euler[1]);
         this.direction[2] = Math.sin(this.euler[0]) * Math.cos(this.euler[1]);
     },
-    quatRotateY: function(value) {
-	    var halfAngle = value / 2;
-        var s = Math.sin(halfAngle);
-
-        var axis = [0.0, 1.0, 0.0];
-        var q = quat4.create();
-
-    	q[0] = axis[0] * s;
-    	q[1] = axis[1] * s;
-    	q[2] = axis[2] * s;
-    	q[3] = Math.cos(halfAngle);
-
-        quat4.multiplyVec3(q, this.direction, this.direction);
-
+    quatRotateX: function(value) {
+        quat.rotateX(this.properties.quat, this.properties.quat, value);
+        this.onQuaternionChange();
         return this;
     },
-    quatRotateX: function(value) {
-	    var halfAngle = value / 2;
-        var s = Math.sin(halfAngle);
-
-        var axis = [1.0, 0.0, 0.0];
-        var q = quat4.create();
-
-    	q[0] = axis[0] * s;
-    	q[1] = axis[1] * s;
-    	q[2] = axis[2] * s;
-    	q[3] = Math.cos(halfAngle);
-
-        quat4.multiplyVec3(q, this.direction, this.direction);
-
+    quatRotateY: function(value) {
+        quat.rotateX(this.properties.quat, this.properties.quat, value);
+        this.onQuaternionChange();
+        return this;
+    },
+    quatRotateZ: function(value) {
+        quat.rotateZ(this.properties.quat, this.properties.quat, value);
+        this.onQuaternionChange();
         return this;
     },
     rotateX: function(value) {
@@ -184,9 +163,10 @@ TnGL.Object.prototype = {
         return this;
     },
     translate: function(direction, value) {
-        this.position[0] += direction[0] * value;
-        this.position[1] += direction[1] * value;
-        this.position[2] += direction[2] * value;
+        this.properties.position[0] += direction[0] * value * -1;
+        this.properties.position[1] += direction[1] * value * -1;
+        this.properties.position[2] += direction[2] * value * -1;
+        this.onQuaternionChange();
         return this;
     },
     rotateFromCenter: function(center, axis, value) {
@@ -268,6 +248,7 @@ TnGL.Object.prototype = {
         this.properties.position[0] = value[0];
         this.properties.position[1] = value[1];
         this.properties.position[2] = value[2];
+        this.onQuaternionChange();
     },
     get position() {
         return this.properties.position;

@@ -30,6 +30,7 @@ $(function() {
         var cube = new TnGL.Object(this.buffers.cube);
         cube.color = [1.0, 0.0, 0.0];
 		cube.translate([0.0, 1.0, 0.0], 1.0);
+        console.log(cube.mvMatrix);
 
         // a 100x100 square as a floor
         var floor = new TnGL.Object(this.buffers.square);
@@ -64,8 +65,7 @@ $(function() {
             .perspective(45.0, this.gl.viewportWidth / this.gl.viewportHeight, 1.0, 10000.0)
             .lookAt([10.0, 10.0, 0.0], cube.position, [0.0, 1.0, 0.0])
         ;
-
-    }
+    };
 
     /*
      * Called once every frame
@@ -78,7 +78,10 @@ $(function() {
      * Called 60 times every seconds
      */
     tngl.logicTick = function() {
+        //this.myscope.cube.position = [0.0, 0.0, 0.0];
+        this.myscope.cube.quatRotateX(0.01);
 
+        //console.log(this.myscope.cube.mvMatrix);
     };
 
     tngl.init();

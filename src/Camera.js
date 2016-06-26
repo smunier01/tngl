@@ -53,7 +53,7 @@ TnGL.Camera.prototype = {
      */
     lookAt: function(eyes, center, up) {
         mat4.lookAt(this.mvMatrix, eyes, center, up);
-        this.position = eyes;
+        this.properties.position = eyes;
         this.onMvmatrixChange();
         this.hasChanged = false;
         return this;

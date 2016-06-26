@@ -170,6 +170,10 @@ TnGL.ShaderContainer.prototype = {
     updatePositionUniforms: function(object) {
         var gl = this.engine.gl;
 
+        if (this.program.uObjMVMatrix) {
+            gl.uniformMatrix4fv(this.program.uObjMVMatrix, false, object.mvMatrix);
+        }
+
         if (this.program.uColor) {
             if (!TnGL.compareArray(this.currentColor, object.color)) {
                 gl.uniform4fv(this.program.uColor, object.color);
@@ -190,9 +194,9 @@ TnGL.ShaderContainer.prototype = {
         }
 
         if (this.program.uOrientation) {
-            if (!TnGL.compareArray(this.currentOrientation, object.properties.orientation)) {
-                gl.uniform3fv(this.program.uOrientation, object.properties.orientation);
-                this.currentOrientation = object.properties.orientation;
+            if (!TnGL.compareArray(this.currentOrientation, object.properties.quat)) {
+                gl.uniform4fv(this.program.uOrientation, object.properties.quat);
+                this.currentOrientation = object.properties.quat;
             }
         }
 
