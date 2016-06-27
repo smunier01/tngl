@@ -14,27 +14,6 @@ uniform vec3 uScale;
 varying vec3 vNormal;
 
 void main() {
-
-  // create rotation matrix for the orientation of the object
-
-  // vec3 test = vec3(1.0, 0.0, 0.0) * uOrientation;
-  //
-  // mat4 rotationMatrix;
-  // rotationMatrix[0] = vec4(test.x, 0.0, -test.z, 0.0);
-  // rotationMatrix[1] = vec4(0.0, 1.0, 0.0, 0.0);
-  // rotationMatrix[2] = vec4(test.z, 0.0, test.x, 0.0);
-  // rotationMatrix[3] = vec4(0.0, 0.0, 0.0, 1.0);
-  //
-  //
-
-  // vec4 q = uOrientation;
-  // vec3 v = aVertexPosition;
-
-  // vec3 temp = cross(q.xyz, v) + q.w * v;
-  // vec3 rotated = (cross(temp, -q.xyz) + dot(q.xyz,v) * q.xyz + q.w * temp);
-
- // vec4 vWorldPosition = uMVMatrix * vec4(((vec4(aVertexPosition, 1.0)).xyz * uScale) + uTranslation, 1.0);
-
   vec4 vWorldPosition = uMVMatrix * vec4(((vec4(aVertexPosition, 1.0) * uObjMVMatrix).xyz * uScale) - uTranslation, 1.0);
   vNormal = aVertexNormal;
 

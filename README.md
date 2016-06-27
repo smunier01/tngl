@@ -179,6 +179,63 @@ var options = {
  tngl.init();
  ```
 
+## shaders
+
+There is some default properties and uniforms used by the framework.
+
+If you use them on your shaders, the right value will automatically be used.
+
+#### attributes
+
+*vec3 aVertexPosition*
+*vec3 aVertexNormal*
+*vec2 aTexturePosition*
+
+#### uniforms
+
+*mat4 uMVMatrix*
+modelview matrix of the camera (Scene.camera)
+
+*mat4 uPMatrix*
+perspective matrix of the camera.
+
+*mat4 uObjMVMatrix*
+modelview matrix of the object.
+
+*vec3 uTranslation*
+translation vector of the object.
+
+*vec4 uOrientation*
+quaternion of the object.
+
+*vec3 uScale*
+scaling factor of the object.
+
+#### example
+
+A basic vertex shader would therefore look like that:
+
+```c
+precision highp float;
+
+attribute vec3 aVertexPosition;
+attribute vec3 aVertexNormal;
+
+uniform mat4 uMVMatrix;
+uniform mat4 uObjMVMatrix;
+uniform mat4 uPMatrix;
+uniform vec3 uTranslation;
+uniform vec3 uScale;
+
+varying vec3 vNormal;
+
+void main() {
+  vec4 vWorldPosition = uMVMatrix * vec4((vec4(aVertexPosition, 1.0) * uObjMVMatrix).xyz * uScale) - uTranslation, 1.0);
+  vNormal = aVertexNormal;
+  gl_Position = uPMatrix * vWorldPosition;
+}
+```
+
 ## documentation
 
 For now, check my examples in the example folder.
