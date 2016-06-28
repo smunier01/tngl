@@ -211,9 +211,24 @@ quaternion of the object.
 `vec3 uScale`
 scaling factor of the object.
 
-#### example
+#### Examples
 
-A basic vertex shader would therefore look like that:
+A very basic vertex shader could be written like:
+
+```c
+precision highp float;
+attribute vec3 aVertexPosition;
+
+uniform mat4 uMVMatrix;
+uniform mat4 uPMatrix;
+
+void main() {
+     vec4 worldPosition = uMVMatrix * vec4(aVertexPosition, 1.0);
+     gl_Position = uPMatrix * worldPosition;        
+}
+```
+
+This only takes into account the camera modelview matrix. For object related uniforms, you would have to do:
 
 ```c
 precision highp float;
@@ -230,11 +245,13 @@ uniform vec3 uScale;
 varying vec3 vNormal;
 
 void main() {
-  vec4 vWorldPosition = uMVMatrix * vec4((vec4(aVertexPosition, 1.0) * uObjMVMatrix).xyz * uScale) - uTranslation, 1.0);
+  vec4 worldPosition = uMVMatrix * vec4((vec4(aVertexPosition, 1.0) * uObjMVMatrix).xyz * uScale) - uTranslation, 1.0);
   vNormal = aVertexNormal;
-  gl_Position = uPMatrix * vWorldPosition;
+  gl_Position = uPMatrix * worldPosition;
 }
 ```
+
+There is obviously many ways to produce the same thing. For example, you could use `uOrientation` instead of `uObjMVMatrix`, and the information from `uTranslation` is also available in `uObjMVMatrix`.
 
 ## documentation
 
