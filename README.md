@@ -187,28 +187,28 @@ If you use them on your shaders, the right value will automatically be used.
 
 #### attributes
 
-*vec3 aVertexPosition*
-*vec3 aVertexNormal*
-*vec2 aTexturePosition*
+`vec3 aVertexPosition`
+`vec3 aVertexNormal`
+`vec2 aTexturePosition`
 
 #### uniforms
 
-*mat4 uMVMatrix*
+`mat4 uMVMatrix`
 modelview matrix of the camera (Scene.camera)
 
-*mat4 uPMatrix*
+`mat4 uPMatrix`
 perspective matrix of the camera.
 
-*mat4 uObjMVMatrix*
+`mat4 uObjMVMatrix`
 modelview matrix of the object.
 
-*vec3 uTranslation*
+`vec3 uTranslation`
 translation vector of the object.
 
-*vec4 uOrientation*
+`vec4 uOrientation`
 quaternion of the object.
 
-*vec3 uScale*
+`vec3 uScale`
 scaling factor of the object.
 
 #### example
