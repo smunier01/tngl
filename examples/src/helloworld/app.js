@@ -14,7 +14,7 @@ $(function() {
         },
         textures: {},
         framebuffers: {}
-    }
+    };
 
     var tngl = new TnGL($('#webgl-canvas')[0], options);
 
@@ -30,7 +30,6 @@ $(function() {
         var cube = new TnGL.Object(this.buffers.cube);
         cube.color = [1.0, 0.0, 0.0];
 		cube.translate([0.0, 1.0, 0.0], 1.0);
-        console.log(cube.mvMatrix);
 
         // a 100x100 square as a floor
         var floor = new TnGL.Object(this.buffers.square);

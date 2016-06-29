@@ -82,7 +82,7 @@ $(function() {
         var cube1 = new TnGL.Object(this.buffers.cube);
         this.cube = cube1;
         cube1.color = [1.0, 0.0, 0.0];
-        cube1.translate([0.0, 1.0, -10.0], 1);
+        //cube1.translate([0.0, 1.0, 10.0], 1);
 
         // a 100x100 square as a floor
         this.createBuffer('floor', this.getModel('square', 100));
@@ -93,7 +93,7 @@ $(function() {
         this.light = light;
         light.color = [0.0, 1.0, 0.0];
         light.scale = [0.2, 0.2, 0.2];
-        light.translate([-10.0, 5.0, -10.0], 1.0);
+        light.translate([10.0, 5.0, 10.0], 1.0);
 
         //
         // shader containers
@@ -126,10 +126,10 @@ $(function() {
 
         this.mainScene.camera
             .perspective(45.0, this.gl.viewportWidth / this.gl.viewportHeight, 1.0, 10000.0)
-            .translate([10.0, 10.0, 0.0], 1.0)
-            .update();
+            .lookAt([0.0, 10.0, 0.0], this.cube.position, [0.0, 1.0, 0.0])
+        ;
 
-        console.log(this.mainScene.camera);
+        console.log(this.mainScene.camera.mvMatrix);
 
         // scene that will render the depth map
 
@@ -141,7 +141,7 @@ $(function() {
 
         this.scene2d = new TnGL.Scene(this);
         this.scene2d.addPart('square', [new TnGL.Object(this.buffers.square2d)], this.getShaderContainer('basic2D'));
-    }
+    };
 
     /*
      * Called once every frame
