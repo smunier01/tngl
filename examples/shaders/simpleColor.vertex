@@ -14,7 +14,7 @@ uniform vec3 uScale;
 varying vec3 vNormal;
 
 void main() {
-  vec4 vWorldPosition = uMVMatrix * vec4(((vec4(aVertexPosition, 1.0) * uObjMVMatrix).xyz * uScale) - uTranslation, 1.0);
+  vec4 vWorldPosition = uMVMatrix * vec4(((vec4(aVertexPosition, 1.0)).xyz * uScale) - uTranslation, 1.0);
   vNormal = aVertexNormal;
 
   gl_Position = uPMatrix * vWorldPosition;
