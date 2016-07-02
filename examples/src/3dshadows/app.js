@@ -22,7 +22,7 @@ $(function() {
                 cache: true,
                 fragExt: 'frag',
                 vertexExt: 'vertex',
-                loadPath: '/shaders/'
+                loadPath: '../../shaders/'
             },
             data: [
                 {name: 'simpleColor'},
@@ -33,7 +33,7 @@ $(function() {
         },
         textures: {
             options: {
-                loadPath: '/textures/'
+                loadPath: '../../textures/'
             },
             data: [
                 {name: 'sand1', source: 'sand1.png'}

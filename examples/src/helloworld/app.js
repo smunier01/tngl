@@ -6,7 +6,7 @@ $(function() {
             options: {
                 fragExt: 'frag',
                 vertexExt: 'vertex',
-                loadPath: '/shaders/'
+                loadPath: '../../shaders/'
             },
             data: [
                 {name: 'simpleColor'}

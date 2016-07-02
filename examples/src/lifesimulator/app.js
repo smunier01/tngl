@@ -36,7 +36,7 @@ $(function() {
                 // extensions for the vertex shaders (default: vertex)
                 vertexExt: 'vertex',
                 // directory containing the shaders (default: ?)
-                loadPath: '/shaders/'
+                loadPath: '../../shaders/'
             },
             /**
             * The list of shaders to compile. Only the property 'name' is needed.
